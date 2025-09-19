@@ -1,0 +1,13 @@
+{
+  "configurations": {
+    "teacherds-front": {
+      "appLocation": ".",
+      "outputLocation": "dist",
+      "appBuildCommand": "npm run build",
+      "run": "npm run dev",
+      "appDevserverUrl": "http://localhost:5173",
+      "appName": "wa-teacherdsreact-site-prod",
+      "resourceGroup": "rg-app-teacherdsreact-eastus2"
+    }
+  }
+}
