@@ -3,6 +3,7 @@ import Card from "../components/ui/Card";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../components/ui/ErrorMessage";
+import { useAuth } from "../hooks/useAuth";
 
 const schema = z.object({
   email: z.email(),
@@ -12,6 +13,8 @@ const schema = z.object({
 type LoginForm = z.infer<typeof schema>;
 
 const Login = () => {
+  const { login } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -20,9 +23,8 @@ const Login = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(data);
+  const onSubmit: SubmitHandler<LoginForm> = async ({ email, password }) => {
+    await login(email, password);
   };
 
   return (

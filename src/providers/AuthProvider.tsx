@@ -1,20 +1,22 @@
 import type { PropsWithChildren } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
+  const [user, setUser] = useLocalStorage<string | null>("user", null);
+  const navigate = useNavigate();
+
   const login = async (username: string, password: string) => {
-    // Implement login logic
+    setUser(username);
+    navigate("/");
   };
 
   const logout = () => {
     // Implement logout logic
   };
 
-  return (
-    <AuthContext.Provider
-      value={{ user: null, login, logout, isAuthenticated: false }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = { user, login, logout, isAuthenticated: !!user };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
