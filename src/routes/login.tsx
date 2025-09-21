@@ -4,7 +4,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import { useAuth } from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const schema = z.object({
   email: z.email(),
@@ -14,7 +14,7 @@ const schema = z.object({
 type LoginForm = z.infer<typeof schema>;
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -29,6 +29,10 @@ const Login = () => {
     await login(email, password);
     navigate("/");
   };
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="flex flex-col max-w-md mx-auto justify-center h-screen">

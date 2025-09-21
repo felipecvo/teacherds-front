@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useAuth } from "../hooks/useAuth";
 import { getToken } from "../services/tokenService";
 
 const client = axios.create({
@@ -19,5 +18,19 @@ client.interceptors.request.use((config) => {
 
   return config;
 });
+
+export const handleJWTExpiration = (onExpiration: () => void) => {
+  console.log("Setting up JWT expiration handler");
+  client.interceptors.response.use(
+    (res) => res,
+    (err) => {
+      console.log("Response error:", err, err.response?.status);
+      if (err.response?.status === 401) {
+        onExpiration();
+      }
+      return Promise.reject(err);
+    }
+  );
+};
 
 export default client;

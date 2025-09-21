@@ -1,7 +1,8 @@
-import { useState, type PropsWithChildren } from "react";
+import { useEffect, useState, type PropsWithChildren } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { postLogin } from "../api/auth";
 import { clearToken, getToken, setToken } from "../services/tokenService";
+import { handleJWTExpiration } from "../api/client";
 
 const initialAuthToken = getToken();
 
@@ -21,6 +22,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     clearToken();
     setUser(null);
   };
+  console.log("JWT expiration handler setup");
+  useEffect(() => {
+    handleJWTExpiration(logout);
+  }, []);
 
   const value = { user, login, logout, isAuthenticated: !!token, token };
 
