@@ -2,15 +2,26 @@ import { useLoaderData } from "react-router-dom";
 import Card from "../components/ui/Card";
 import Evaluate from "../components/Evaluate";
 import { useState } from "react";
+import { set } from "zod";
 
 const EvaluationPage = () => {
   const [currentEvaluation, setCurrentEvaluation] = useState(0);
   const { assessment, evaluations } = useLoaderData();
   console.log("Loaded assessment data:", assessment.title);
 
+  function handleNext() {
+    setCurrentEvaluation((prev) => prev + 1);
+  }
+
+  function handlePrevious() {
+    setCurrentEvaluation((prev) => prev - 1);
+  }
+
   return (
     <div className="flex flex-col gap-6">
-      <div>voltar / student 1 of {evaluations.length}</div>
+      <div>
+        voltar / student {currentEvaluation + 1} of {evaluations.length}
+      </div>
       <Card>
         <div className="flex p-6">
           <div className="flex-col flex-1">
@@ -41,7 +52,12 @@ const EvaluationPage = () => {
         </div>
       </Card>
       <p>{evaluations.length}</p>
-      <Evaluate id={evaluations[currentEvaluation].id} />
+      <Evaluate
+        key={evaluations[currentEvaluation].id}
+        id={evaluations[currentEvaluation].id}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+      />
     </div>
   );
 };
