@@ -4,6 +4,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   email: z.email(),
@@ -14,6 +15,7 @@ type LoginForm = z.infer<typeof schema>;
 
 const Login = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -25,6 +27,7 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<LoginForm> = async ({ email, password }) => {
     await login(email, password);
+    navigate("/");
   };
 
   return (

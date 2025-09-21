@@ -1,22 +1,28 @@
-import type { PropsWithChildren } from "react";
+import { useState, type PropsWithChildren } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { useNavigate } from "react-router-dom";
+import { postLogin } from "../api/auth";
+import { clearToken, getToken, setToken } from "../services/tokenService";
+
+const initialAuthToken = getToken();
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useLocalStorage<string | null>("user", null);
-  const navigate = useNavigate();
+  const [token, setTokenState] = useState(initialAuthToken);
+  const [user, setUser] = useState<string | null>(null);
 
   const login = async (username: string, password: string) => {
+    const data = await postLogin(username, password);
+    setToken(data.token);
+    setTokenState(data.token);
     setUser(username);
-    navigate("/");
   };
 
   const logout = () => {
-    // Implement logout logic
+    setToken(null);
+    clearToken();
+    setUser(null);
   };
 
-  const value = { user, login, logout, isAuthenticated: !!user };
+  const value = { user, login, logout, isAuthenticated: !!token, token };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
