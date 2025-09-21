@@ -1,6 +1,5 @@
 import { useLoaderData } from "react-router-dom";
 import Card from "../components/ui/Card";
-import EvaluateCriteria from "../components/EvaluateCriteria";
 import Evaluate from "../components/Evaluate";
 import { useState } from "react";
 
