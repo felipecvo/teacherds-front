@@ -5,6 +5,9 @@ import EvaluateCriterion from "./EvaluateCriterion";
 import { useState } from "react";
 import Card from "./ui/Card";
 import StudentCard from "./StudentCard";
+import type { Evaluation } from "../types/evaluation";
+import type { Criterion } from "../types/criterion";
+import type { CriterionLevel } from "../types/criterionLevel";
 
 interface Props {
   id: number;
@@ -14,12 +17,12 @@ interface Props {
 }
 
 const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
-  const [criteria, setCriteria] = useState<{ [key: string]: string }>({});
+  const [criteria, setCriteria] = useState<{ [key: string]: number }>({});
   const [feedback, setFeedback] = useState("");
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationFn: async (data: { id: number; payload: any }) =>
+    mutationFn: async (data: { id: number; payload: Evaluation }) =>
       saveEvaluation(data.id, data.payload),
     onSuccess: () => {
       console.log("Evaluation saved successfully");
@@ -30,7 +33,7 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
     },
   });
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<Evaluation>({
     queryKey: ["evaluation", id],
     queryFn: async () => getEvaluation(id),
   });
@@ -38,18 +41,20 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading evaluation</div>;
 
-  function onSelectLevel(criterionId: string, levelId: string) {
+  function onSelectLevel(criterionId: number, levelId: number) {
     setCriteria((prev) => ({ ...prev, [criterionId]: levelId }));
   }
 
   function handleSave(completed: boolean) {
-    const payload = {
-      scores: data.rubric.criteria.map((c: any) => ({
+    console.log("handleSave", completed);
+    const payload: Evaluation = {
+      scores: data!.rubric!.criteria.map((c: Criterion) => ({
         criterion: { id: c.id },
         criterionLevel: { id: criteria[c.id] },
         evaluation: { id },
         points:
-          c.points * c.levels.find((l: any) => l.id === criteria[c.id])?.weight,
+          c.points *
+          c.levels.find((l: CriterionLevel) => l.id === criteria[c.id])!.weight,
         feedbackDraft: "",
         feedbackRefined: "",
         feedbackFinal: "",
@@ -60,13 +65,15 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
     mutate({ id, payload });
   }
 
+  if (!data) return null;
+
   return (
     <div className="space-y-6">
       {data.studentGroup && <StudentGroup {...data.studentGroup} />}
       {data.student && <StudentCard {...data.student} />}
-      {data.rubric.criteria.map((criterion: any) => (
+      {data.rubric!.criteria.map((criterion: Criterion) => (
         <EvaluateCriterion
-          key={criterion.id}
+          key={criterion.id.toString()}
           {...criterion}
           onSelectLevel={onSelectLevel}
           selectedLevel={criteria[criterion.id]}

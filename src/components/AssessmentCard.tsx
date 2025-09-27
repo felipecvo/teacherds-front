@@ -8,7 +8,7 @@ interface Props {
   type: string;
   classroom: string;
 }
-const AssessmentCard = ({ title, description, id, type, classroom }: Props) => {
+const AssessmentCard = ({ title, description, id, classroom }: Props) => {
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>

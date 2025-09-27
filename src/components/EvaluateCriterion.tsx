@@ -1,12 +1,12 @@
 import Card from "./ui/Card";
 
 interface Props {
-  id: string;
-  selectedLevel: string;
+  id: number;
+  selectedLevel: number;
   name: string;
   description: string;
-  levels: { id: string; name: string; description: string }[];
-  onSelectLevel: (id: string, levelId: string) => void;
+  levels: { id: number; name: string; description: string }[];
+  onSelectLevel: (id: number, levelId: number) => void;
 }
 
 const EvaluateCriterion = ({
