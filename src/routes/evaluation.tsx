@@ -1,13 +1,16 @@
 import { useLoaderData } from "react-router-dom";
 import Card from "../components/ui/Card";
 import Evaluate from "../components/Evaluate";
-import { useState } from "react";
-import { set } from "zod";
+import { useEffect, useState } from "react";
 
 const EvaluationPage = () => {
   const [currentEvaluation, setCurrentEvaluation] = useState(0);
   const { assessment, evaluations } = useLoaderData();
   console.log("Loaded assessment data:", assessment.title);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentEvaluation]);
 
   function handleNext() {
     setCurrentEvaluation((prev) => prev + 1);
@@ -15,6 +18,10 @@ const EvaluationPage = () => {
 
   function handlePrevious() {
     setCurrentEvaluation((prev) => prev - 1);
+  }
+
+  function handleSave(completed: boolean) {
+    console.log("Saved evaluation, completed:", completed);
   }
 
   return (
@@ -57,6 +64,7 @@ const EvaluationPage = () => {
         id={evaluations[currentEvaluation].id}
         onNext={handleNext}
         onPrevious={handlePrevious}
+        onSave={handleSave}
       />
     </div>
   );

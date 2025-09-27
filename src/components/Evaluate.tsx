@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { getEvaluation } from "../api/evaluations";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getEvaluation, saveEvaluation } from "../api/evaluations";
 import StudentGroup from "./StudentGroup";
 import EvaluateCriterion from "./EvaluateCriterion";
 import { useState } from "react";
 import Card from "./ui/Card";
+import StudentCard from "./StudentCard";
 
 interface Props {
   id: number;
@@ -14,6 +15,20 @@ interface Props {
 
 const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
   const [criteria, setCriteria] = useState<{ [key: string]: string }>({});
+  const [feedback, setFeedback] = useState("");
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: async (data: { id: number; payload: any }) =>
+      saveEvaluation(data.id, data.payload),
+    onSuccess: () => {
+      console.log("Evaluation saved successfully");
+      queryClient.invalidateQueries({ queryKey: ["evaluation", id] });
+    },
+    onError: (error) => {
+      console.error("Error saving evaluation:", error);
+    },
+  });
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["evaluation", id],
@@ -27,9 +42,28 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
     setCriteria((prev) => ({ ...prev, [criterionId]: levelId }));
   }
 
+  function handleSave(completed: boolean) {
+    const payload = {
+      scores: data.rubric.criteria.map((c: any) => ({
+        criterion: { id: c.id },
+        criterionLevel: { id: criteria[c.id] },
+        evaluation: { id },
+        points:
+          c.points * c.levels.find((l: any) => l.id === criteria[c.id])?.weight,
+        feedbackDraft: "",
+        feedbackRefined: "",
+        feedbackFinal: "",
+      })),
+      feedback,
+    };
+
+    mutate({ id, payload });
+  }
+
   return (
     <div className="space-y-6">
       {data.studentGroup && <StudentGroup {...data.studentGroup} />}
+      {data.student && <StudentCard {...data.student} />}
       {data.rubric.criteria.map((criterion: any) => (
         <EvaluateCriterion
           key={criterion.id}
@@ -44,7 +78,11 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
             Final Feedback
           </h2>
           <p>Provide overall comments for this assessment</p>
-          <textarea className="w-full mt-4 p-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          <textarea
+            className="w-full mt-4 p-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+          />
         </div>
       </Card>
       <div className="flex justify-between">
@@ -103,7 +141,7 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
             </svg>
             Save Progress
           </button>
-          <button className="primary-button" onClick={() => onSave(true)}>
+          <button className="primary-button" onClick={() => handleSave(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

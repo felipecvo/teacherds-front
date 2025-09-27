@@ -6,12 +6,15 @@ interface Props {
   description: string;
   id: number;
   type: string;
+  classroom: string;
 }
-const AssessmentCard = ({ title, description, id, type }: Props) => {
+const AssessmentCard = ({ title, description, id, type, classroom }: Props) => {
   return (
     <Card className="p-6">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">{title}</h2>
-      <p>{description}</p>
+      <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
+      <p>
+        {classroom} - {description}
+      </p>
       <Link to={`/assessments/${id}/evaluation`} className="primary-button">
         Start Evaluation
       </Link>

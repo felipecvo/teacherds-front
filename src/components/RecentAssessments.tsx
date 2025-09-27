@@ -15,7 +15,11 @@ const RecentAssessments = () => {
       {data && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.map((assessment: any) => (
-            <AssessmentCard key={assessment.id} {...assessment} />
+            <AssessmentCard
+              key={assessment.id}
+              {...assessment}
+              classroom={assessment.classroom.name}
+            />
           ))}
         </div>
       )}
