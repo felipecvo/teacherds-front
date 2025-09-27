@@ -45,6 +45,16 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
     setCriteria((prev) => ({ ...prev, [criterionId]: levelId }));
   }
 
+  function computePoints(c: Criterion): number {
+    const selectedLevel = c.levels.find(
+      (l: CriterionLevel) => l.id === criteria[c.id]
+    );
+
+    if (!selectedLevel) return 0;
+
+    return c.points * selectedLevel.weight;
+  }
+
   function handleSave(completed: boolean) {
     console.log("handleSave", completed);
     const payload: Evaluation = {
@@ -52,9 +62,7 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
         criterion: { id: c.id },
         criterionLevel: { id: criteria[c.id] },
         evaluation: { id },
-        points:
-          c.points *
-          c.levels.find((l: CriterionLevel) => l.id === criteria[c.id])!.weight,
+        points: computePoints(c),
         feedbackDraft: "",
         feedbackRefined: "",
         feedbackFinal: "",

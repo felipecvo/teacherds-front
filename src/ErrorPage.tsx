@@ -1,11 +1,14 @@
 import { useNavigate, useRouteError } from "react-router-dom";
-import { useAuth } from "./hooks/useAuth";
+
+type RouteError = {
+  error: { status?: number; message?: string };
+};
 
 const ErrorPage = () => {
-  const { error } = useRouteError();
+  const { error } = useRouteError() as RouteError;
   const navigate = useNavigate();
 
-  if (error?.status === 401) {
+  if (error && error.status === 401) {
     navigate("/login");
   }
 
