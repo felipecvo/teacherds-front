@@ -12,6 +12,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import EvaluationPage from "./routes/evaluation";
 import { queryClient } from "./utils/queryClient";
 import { evaluationLoader } from "./routes/evaluation.loader";
+import ClassroomsPage from "./routes/classrooms";
+import { classroomsLoader } from "./routes/classrooms.loader";
+import NewClassroomPage from "./routes/new-classroom";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +30,15 @@ const router = createBrowserRouter([
         path: "assessments/:assessmentId/evaluation",
         element: <EvaluationPage />,
         loader: evaluationLoader,
+      },
+      {
+        path: "classrooms",
+        element: <ClassroomsPage />,
+        loader: classroomsLoader,
+      },
+      {
+        path: "classrooms/new",
+        element: <NewClassroomPage />,
       },
     ],
   },

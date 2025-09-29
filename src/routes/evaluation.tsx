@@ -21,7 +21,11 @@ const EvaluationPage = () => {
   }
 
   function handleSave(completed: boolean) {
-    console.log("Saved evaluation, completed:", completed);
+    console.log(
+      "Saved evaluation, completed:",
+      completed,
+      evaluations[currentEvaluation].id
+    );
   }
 
   return (

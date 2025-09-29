@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #eca413;
+}
+
 @layer components {
   .primary-button {
     @apply inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium

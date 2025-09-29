@@ -8,6 +8,7 @@ import StudentCard from "./StudentCard";
 import type { Evaluation } from "../types/evaluation";
 import type { Criterion } from "../types/criterion";
 import type { CriterionLevel } from "../types/criterionLevel";
+import EvaluationPenalty from "./EvaluationPenalty";
 
 interface Props {
   id: number;
@@ -18,10 +19,11 @@ interface Props {
 
 const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
   const [criteria, setCriteria] = useState<{ [key: string]: number }>({});
+  const [penalties, setPenalties] = useState<number[]>([]);
   const [feedback, setFeedback] = useState("");
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (data: { id: number; payload: Evaluation }) =>
       saveEvaluation(data.id, data.payload),
     onSuccess: () => {
@@ -43,6 +45,14 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
 
   function onSelectLevel(criterionId: number, levelId: number) {
     setCriteria((prev) => ({ ...prev, [criterionId]: levelId }));
+  }
+
+  function handlePenalty(id: number, flagged: boolean) {
+    if (flagged) {
+      setPenalties((prev) => [...prev, id]);
+    } else {
+      setPenalties((prev) => prev.filter((item) => item !== id));
+    }
   }
 
   function computePoints(c: Criterion): number {
@@ -67,6 +77,20 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
         feedbackRefined: "",
         feedbackFinal: "",
       })),
+      penalties: data!
+        .rubric!.penalties.map((penalty) => {
+          if (penalties.includes(penalty.id)) {
+            return {
+              evaluation: { id },
+              penalty: { id: penalty.id },
+              feedback: "",
+              points: penalty.points,
+            };
+          } else {
+            return null;
+          }
+        })
+        .filter((item) => item !== null),
       feedback,
     };
 
@@ -85,6 +109,14 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
           {...criterion}
           onSelectLevel={onSelectLevel}
           selectedLevel={criteria[criterion.id]}
+        />
+      ))}
+      {data.rubric!.penalties.map((penalty) => (
+        <EvaluationPenalty
+          key={penalty.id.toString()}
+          {...penalty}
+          onPenalty={handlePenalty}
+          checked={penalties.includes(penalty.id)}
         />
       ))}
       <Card>
@@ -156,7 +188,11 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
             </svg>
             Save Progress
           </button>
-          <button className="primary-button" onClick={() => handleSave(true)}>
+          <button
+            className="primary-button"
+            onClick={() => handleSave(true)}
+            disabled={isPending}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
