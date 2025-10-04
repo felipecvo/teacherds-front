@@ -7,6 +7,13 @@ export async function getClassrooms(): Promise<Classroom[]> {
   return response.data;
 }
 
+export async function getClassroomById(
+  id: string | number
+): Promise<Classroom> {
+  const response = await apiClient.get<Classroom>(`/classrooms/${id}`);
+  return response.data;
+}
+
 export async function postClassroom(params: NewClassroom) {
   const response = await apiClient.post("/classrooms", params);
 

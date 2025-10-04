@@ -1,8 +1,9 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import type { Classroom } from "../types/classroom";
 
 const ClassroomsPage = () => {
   const data = useLoaderData<Classroom[]>();
+  const navigate = useNavigate();
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -33,7 +34,8 @@ const ClassroomsPage = () => {
           {data.map((row) => (
             <tr
               key={row.id}
-              className="whitespace-nowrap text-base font-medium text-stone-800"
+              className="whitespace-nowrap text-base font-medium text-stone-800 hover:cursor-pointer hover:bg-primary/5"
+              onClick={() => navigate(`/classrooms/${row.id}`)}
             >
               <td className="px-6 py-5">{row.name}</td>
               <td className="text-center px-6 py-5">{row.semester}</td>

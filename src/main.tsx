@@ -18,6 +18,8 @@ import NewClassroomPage from "./routes/new-classroom";
 import RubricsPage from "./routes/rubrics";
 import { rubricsLoader } from "./routes/rubrics/loader";
 import RubricForm from "./routes/rubrics/Form";
+import ShowClassroomPage from "./routes/classrooms/Show";
+import AssessmentFormPage from "./routes/assessments/Form";
 
 const router = createBrowserRouter([
   {
@@ -36,12 +38,21 @@ const router = createBrowserRouter([
       },
       {
         path: "classrooms",
-        element: <ClassroomsPage />,
-        loader: classroomsLoader,
-      },
-      {
-        path: "classrooms/new",
-        element: <NewClassroomPage />,
+        children: [
+          {
+            index: true,
+            element: <ClassroomsPage />,
+            loader: classroomsLoader,
+          },
+          {
+            path: "new",
+            element: <NewClassroomPage />,
+          },
+          {
+            path: ":classroomId",
+            element: <ShowClassroomPage />,
+          },
+        ],
       },
       {
         path: "rubrics",
@@ -56,6 +67,10 @@ const router = createBrowserRouter([
             element: <RubricForm mode="new" />,
           },
         ],
+      },
+      {
+        path: "assessments/new",
+        element: <AssessmentFormPage />,
       },
     ],
   },
