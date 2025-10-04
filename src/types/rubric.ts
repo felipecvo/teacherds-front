@@ -12,8 +12,11 @@ export interface Rubric {
   penalties: Penalty[];
 }
 
+type NewCriterion = Omit<Criterion, "id" | "levels"> & {
+  levels: Omit<CriterionLevel, "id">[];
+};
+
 export type NewRubric = Omit<Rubric, "id" | "criteria" | "penalties"> & {
-  criteria: Omit<Criterion, "id" | "levels"> &
-    { levels: Omit<CriterionLevel, "id">[] }[];
+  criteria: NewCriterion[];
   penalties: Omit<Penalty, "id">[];
 };

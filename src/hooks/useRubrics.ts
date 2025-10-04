@@ -18,10 +18,10 @@ export const useRubrics = ({ onSuccess }: UseRubricsOptions = {}) => {
   });
 
   const { mutate: update } = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Data updated:", data);
+      console.log("Data updated:");
     },
   });
 

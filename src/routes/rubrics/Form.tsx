@@ -12,41 +12,56 @@ interface Props {
   mode: "new" | "edit";
 }
 
-const schema = z.object({
-  id: z.number().optional(),
-  name: z.string().min(1),
-  totalPoints: z.number().gt(0).lte(100),
-  description: z.string().min(1),
-  notes: z.string().min(1),
-  criteria: z
-    .array(
+const schema = z
+  .object({
+    id: z.number().optional(),
+    name: z.string().min(1),
+    totalPoints: z.number().gt(0).lte(100),
+    description: z.string().min(1),
+    notes: z.string().min(1),
+    criteria: z
+      .array(
+        z.object({
+          id: z.number().optional(),
+          name: z.string().min(1),
+          description: z.string().min(1),
+          points: z.number().gt(0),
+          levels: z
+            .array(
+              z.object({
+                id: z.number().optional(),
+                name: z.string().min(1),
+                description: z.string().min(1),
+                weight: z.number().gte(0),
+              })
+            )
+            .min(1),
+        })
+      )
+      .min(1),
+    penalties: z.array(
       z.object({
         id: z.number().optional(),
         name: z.string().min(1),
         description: z.string().min(1),
-        points: z.number().gt(0),
-        levels: z
-          .array(
-            z.object({
-              id: z.number().optional(),
-              name: z.string().min(1),
-              description: z.string().min(1),
-              weight: z.number().gte(0),
-            })
-          )
-          .min(1),
+        points: z.number().lt(0),
       })
-    )
-    .min(1),
-  penalties: z.array(
-    z.object({
-      id: z.number().optional(),
-      name: z.string().min(1),
-      description: z.string().min(1),
-      points: z.number().lt(0),
-    })
-  ),
-});
+    ),
+  })
+  .refine(
+    (data) => {
+      const totalCriteriaPoints = data.criteria.reduce(
+        (sum, criterion) => sum + criterion.points,
+        0
+      );
+      return totalCriteriaPoints === data.totalPoints;
+    },
+    {
+      message:
+        "A soma dos pontos dos critérios deve ser igual aos pontos totais.",
+      path: ["criteria"],
+    }
+  );
 
 type FormData = z.infer<typeof schema>;
 
@@ -101,7 +116,7 @@ const RubricForm = ({ mode }: Props) => {
     if (mode === "new") {
       create(data);
     } else {
-      update(data);
+      update();
     }
   }
 
@@ -114,6 +129,13 @@ const RubricForm = ({ mode }: Props) => {
         </p>
       </div>
 
+      {errors.criteria?.root && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-red-600 text-sm font-medium">
+            {errors.criteria.root.message}
+          </p>
+        </div>
+      )}
       <SectionCard>
         <h3 className="font-cinzel text-2xl font-semibold font-display mb-6 border-b-2 border-primary pb-4 text-primary tracking-wide">
           Detalhes da Rubrica
