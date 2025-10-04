@@ -19,9 +19,9 @@ const Root = () => {
   return (
     <ProtectedRoute>
       <Header />
-      <div className="p-6">
+      <main className="max-w-7xl mx-auto py-8 space-y-8">
         <Outlet />
-      </div>
+      </main>
     </ProtectedRoute>
   );
 };
