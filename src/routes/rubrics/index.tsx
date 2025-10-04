@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import type { Rubric } from "../../types/rubric";
 
 const RubricsPage = () => {
@@ -11,10 +11,13 @@ const RubricsPage = () => {
         <h2 className="font-cinzel text-4xl font-bold tracking-tight">
           Rubricas
         </h2>
-        <button className="flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary/90 focus-visible:outline-offset-2 focus-visible:outline-primary">
+        <Link
+          to="/rubrics/new"
+          className="flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary/90 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
           <span className="material-symbols-outlined"> add </span>
           <span className="truncate">Adicionar Rubrica</span>
-        </button>
+        </Link>
       </div>
       RubricsPage: {data ? data.length : 0}
       <table className="min-w-full">

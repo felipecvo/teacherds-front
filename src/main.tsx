@@ -17,6 +17,7 @@ import { classroomsLoader } from "./routes/classrooms.loader";
 import NewClassroomPage from "./routes/new-classroom";
 import RubricsPage from "./routes/rubrics";
 import { rubricsLoader } from "./routes/rubrics/loader";
+import RubricForm from "./routes/rubrics/Form";
 
 const router = createBrowserRouter([
   {
@@ -44,8 +45,17 @@ const router = createBrowserRouter([
       },
       {
         path: "rubrics",
-        element: <RubricsPage />,
-        loader: rubricsLoader,
+        children: [
+          {
+            index: true,
+            element: <RubricsPage />,
+            loader: rubricsLoader,
+          },
+          {
+            path: "new",
+            element: <RubricForm mode="new" />,
+          },
+        ],
       },
     ],
   },
