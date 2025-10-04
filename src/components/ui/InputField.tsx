@@ -1,6 +1,9 @@
+import type { FieldError } from "react-hook-form";
+
 type Props = {
   label: string;
   id: string;
+  error?: FieldError | undefined;
 } & React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement

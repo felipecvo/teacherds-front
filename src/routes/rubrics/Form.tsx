@@ -4,6 +4,9 @@ import SectionCard from "../../components/ui/SectionCard";
 import TextareaField from "../../components/ui/TextareaField";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import CriterionLevelsForm from "../../components/domain/CriterionLevelsForm";
+import { useRubrics } from "../../hooks/useRubrics";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   mode: "new" | "edit";
@@ -48,6 +51,14 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const RubricForm = ({ mode }: Props) => {
+  const navigate = useNavigate();
+
+  const { create, update } = useRubrics({
+    onSuccess: () => {
+      navigate("/rubrics");
+    },
+  });
+
   const {
     control,
     register,
@@ -86,6 +97,12 @@ const RubricForm = ({ mode }: Props) => {
 
   function onSubmit(data: FormData) {
     console.log(data);
+
+    if (mode === "new") {
+      create(data);
+    } else {
+      update(data);
+    }
   }
 
   return (
@@ -115,6 +132,7 @@ const RubricForm = ({ mode }: Props) => {
             id="rubric-points"
             placeholder="Ex: 100"
             type="number"
+            error={errors.totalPoints}
             {...register("totalPoints", { valueAsNumber: true })}
           />
           <TextareaField
@@ -157,102 +175,55 @@ const RubricForm = ({ mode }: Props) => {
           </button>
         </div>
         <div className="space-y-6">
-          {criteriaFields.map((field, index) => {
-            const { fields: levelFields } = useFieldArray({
-              control,
-              name: `criteria.${index}.levels` as "criteria.0.levels",
-            });
-            return (
-              <SectionCard key={field.id}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                  <InputField
-                    label="Nome do Critério"
-                    placeholder="Ex: Profundidade da Análise"
-                    type="text"
-                    id={`criteria.${index}.name`}
-                    {...register(`criteria.${index}.name`)}
-                  />
-                  <InputField
-                    label="Pontos"
-                    placeholder="Ex: 30"
-                    type="number"
-                    id={`criteria.${index}.points`}
-                    {...register(`criteria.${index}.points`, {
-                      valueAsNumber: true,
-                    })}
-                  />
-                  <TextareaField
-                    className="md:col-span-2"
-                    label="Descrição do Critério"
-                    placeholder="Detalhe o que será avaliado neste pilar"
-                    rows={2}
-                    id={`criteria.${index}.description`}
-                    {...register(`criteria.${index}.description`)}
-                  />
-                </div>
-                <div className="mt-8">
-                  <h4 className="text-lg font-semibold font-cinzel mb-4 text-primary tracking-wide">
-                    Níveis de Critério
-                  </h4>
-                  <div className="space-y-4">
-                    {levelFields.map((levelField, levelIndex) => (
-                      <div
-                        key={levelField.id}
-                        className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start p-4 bg-primary/5 rounded-md border border-primary"
-                      >
-                        <InputField
-                          className="md:col-span-3"
-                          label="Nome do Nível"
-                          placeholder="Ex: Lendário"
-                          type="text"
-                          id={`criteria.${index}.levels.${levelIndex}.name`}
-                          {...register(
-                            `criteria.${index}.levels.${levelIndex}.name`
-                          )}
-                        />
-                        <TextareaField
-                          className="md:col-span-7"
-                          label="Descrição"
-                          placeholder="Descreva as características deste patamar"
-                          rows={2}
-                          id={`criteria.${index}.levels.${levelIndex}.description`}
-                          {...register(
-                            `criteria.${index}.levels.${levelIndex}.description`
-                          )}
-                        />
-                        <InputField
-                          className="md:col-span-2"
-                          label="Peso"
-                          placeholder="Ex: 1.0"
-                          type="text"
-                          id={`criteria.${index}.levels.${levelIndex}.weight`}
-                          {...register(
-                            `criteria.${index}.levels.${levelIndex}.weight`,
-                            { valueAsNumber: true }
-                          )}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <button className="mt-4 secondary-button">
-                    <span className="material-symbols-outlined text-sm">
-                      add
-                    </span>
-                    Adicionar Nível
-                  </button>
-                  <button
-                    className="mt-4 secondary-button"
-                    onClick={() => removeCriteria(index)}
-                  >
-                    <span className="material-symbols-outlined text-sm">
-                      delete
-                    </span>
-                    Remover criterio
-                  </button>
-                </div>
-              </SectionCard>
-            );
-          })}
+          {criteriaFields.map((field, index) => (
+            <SectionCard key={field.id}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <InputField
+                  label="Nome do Critério"
+                  placeholder="Ex: Profundidade da Análise"
+                  type="text"
+                  id={`criteria.${index}.name`}
+                  {...register(`criteria.${index}.name`)}
+                />
+                <InputField
+                  label="Pontos"
+                  placeholder="Ex: 30"
+                  type="number"
+                  id={`criteria.${index}.points`}
+                  {...register(`criteria.${index}.points`, {
+                    valueAsNumber: true,
+                  })}
+                />
+                <TextareaField
+                  className="md:col-span-2"
+                  label="Descrição do Critério"
+                  placeholder="Detalhe o que será avaliado neste pilar"
+                  rows={2}
+                  id={`criteria.${index}.description`}
+                  {...register(`criteria.${index}.description`)}
+                />
+              </div>
+              <div className="mt-8">
+                <h4 className="text-lg font-semibold font-cinzel mb-4 text-primary tracking-wide">
+                  Níveis de Critério
+                </h4>
+                <CriterionLevelsForm
+                  control={control}
+                  index={index}
+                  register={register}
+                />
+                <button
+                  className="mt-4 secondary-button"
+                  onClick={() => removeCriteria(index)}
+                >
+                  <span className="material-symbols-outlined text-sm">
+                    delete
+                  </span>
+                  Remover criterio
+                </button>
+              </div>
+            </SectionCard>
+          ))}
         </div>
       </section>
       <section className="space-y-8">
