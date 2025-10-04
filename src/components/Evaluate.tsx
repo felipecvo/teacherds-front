@@ -133,7 +133,7 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
         </div>
       </Card>
       <div className="flex justify-between">
-        <button className="primary-button" onClick={onPrevious}>
+        <button className="green-button" onClick={onPrevious}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -160,7 +160,7 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
         </button>
         <div className="space-x-4">
           <button
-            className="primary-button bg-transparent text-gray-500"
+            className="green-button bg-transparent text-gray-500"
             onClick={() => onSave(false)}
           >
             <svg
@@ -189,7 +189,7 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
             Save Progress
           </button>
           <button
-            className="primary-button"
+            className="green-button"
             onClick={() => handleSave(true)}
             disabled={isPending}
           >
@@ -219,7 +219,7 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
           </button>
         </div>
         <button
-          className="primary-button bg-blue-900 hover:bg-blue-900/80"
+          className="green-button bg-blue-900 hover:bg-blue-900/80"
           onClick={onNext}
         >
           Next Student

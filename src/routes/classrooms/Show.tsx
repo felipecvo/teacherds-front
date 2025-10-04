@@ -1,6 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Route,
+  Routes,
+  useParams,
+  type To,
+} from "react-router-dom";
 import { getClassroomById } from "../../api/classrooms";
+import AssessmentsTab from "./AssessmentsTab";
+import type { PropsWithChildren } from "react";
+
+const TabItem = ({ to, children }: PropsWithChildren & { to: To }) => {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        "py-4 px-1 border-b-2 " +
+        (isActive && window.location.pathname === to
+          ? "border-primary text-primary font-semibold"
+          : "border-transparent text-text-dark/70 hover:text-primary hover:border-primary")
+      }
+    >
+      {children}
+    </NavLink>
+  );
+};
 
 const ShowClassroomPage = () => {
   const { classroomId } = useParams();
@@ -34,6 +59,26 @@ const ShowClassroomPage = () => {
           <span className="font-semibold text-gray-800">{data.courseName}</span>
         </span>
       </div>
+      <div className="mb-6">
+        <div className="border-b border-slate-300">
+          <nav className="flex space-x-8 -mb-px">
+            <TabItem to={`/classrooms/${classroomId}`}>Visão Geral</TabItem>
+            <TabItem to={`/classrooms/${classroomId}/assessments`}>
+              Avaliações
+            </TabItem>
+            <TabItem to={`/classrooms/${classroomId}/students`}>Alunos</TabItem>
+            <TabItem to={`/classrooms/${classroomId}/activities`}>
+              Atividades
+            </TabItem>
+            <TabItem to={`/classrooms/${classroomId}/attendance`}>
+              Frequência
+            </TabItem>
+          </nav>
+        </div>
+      </div>
+      <Routes>
+        <Route path="assessments" element={<AssessmentsTab />} />
+      </Routes>
       <div className="fixed bottom-12 right-16 z-10">
         <div className="flex flex-col items-end gap-4 group">
           <div className="hidden group-hover:flex flex-col items-end gap-3 mb-2 transition-all duration-300 opacity-0 group-hover:opacity-100">

@@ -15,3 +15,10 @@ export const postAssessment = async (params: NewAssessment) => {
   const response = await apiClient.post("/assessments", params);
   return response.data;
 };
+
+export async function startGrading(assessmentId: number) {
+  const response = await apiClient.post(
+    `/assessments/${assessmentId}/evaluations`
+  );
+  return response.data;
+}
