@@ -2,6 +2,9 @@
 
 @theme {
   --color-primary: #eca413;
+  --font-cinzel: "Cinzel Decorative";
+  --default-font-family: "Noto Sans";
+  --default-mono-font-family: "Fira Code";
 }
 
 @layer components {

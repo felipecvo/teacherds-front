@@ -31,7 +31,10 @@ const ClassroomsPage = () => {
         </thead>
         <tbody className="divide-y divide-primary/10 dark:divide-primary/20">
           {data.map((row) => (
-            <tr className="whitespace-nowrap text-base font-medium text-stone-800">
+            <tr
+              key={row.id}
+              className="whitespace-nowrap text-base font-medium text-stone-800"
+            >
               <td className="px-6 py-5">{row.name}</td>
               <td className="text-center px-6 py-5">{row.semester}</td>
               <td className="text-center px-6 py-5">{row.year}</td>

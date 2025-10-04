@@ -12,7 +12,9 @@ const Index = () => {
         </p>
       </div>
       <div>
-        <h2 className="text-2xl font-semibold mb-4">Your Classrooms</h2>
+        <h2 className="font-cinzel text-2xl font-semibold mb-4">
+          Your Classrooms
+        </h2>
       </div>
       <div>
         <h2 className="text-2xl font-semibold mb-4">Recent Assessments</h2>
