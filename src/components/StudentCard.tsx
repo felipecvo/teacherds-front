@@ -11,7 +11,11 @@ const StudentCard = ({ name, githubUsername }: Props) => {
     <Card>
       <div className="flex p-6 gap-6">
         <div className="w-12 h-12 rounded-full bg-gray-200 inline-flex items-center justify-center">
-          {name.charAt(0)}
+          <img
+            src={`https://github.com/${githubUsername}.png`}
+            alt={name}
+            className="rounded-full"
+          />
         </div>
         <div className="flex-col flex-1">
           <h2 className="text-2xl font-semibold text-gray-700">{name}</h2>

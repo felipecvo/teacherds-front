@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { startGrading } from "../../api/assessments";
+import { finishGrading, startGrading } from "../../api/assessments";
 import type { AssessmentStatus } from "../../types/assessment";
 
 interface Props {
@@ -8,24 +8,61 @@ interface Props {
   classroomId: string;
 }
 
+interface ActionButtonProps {
+  title: string;
+  onClick: () => void;
+  icon: string;
+}
+
+const ActionButton = ({ title, onClick, icon }: ActionButtonProps) => {
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    onClick();
+  }
+
+  return (
+    <button
+      title={title}
+      className="cursor-pointer text-primary hover:text-amber-700"
+      onClick={handleClick}
+    >
+      <span className="material-symbols-outlined">{icon}</span>
+    </button>
+  );
+};
+
 const AssessmentActions = ({ status, id, classroomId }: Props) => {
   const queryClient = useQueryClient();
 
-  function handleClick(e: React.MouseEvent) {
-    e.stopPropagation();
-    mutateStartGrading();
-  }
+  const { mutate: mutateStartGrading, isPending: isPendingStart } = useMutation(
+    {
+      mutationFn: () => startGrading(id),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["assessments", classroomId],
+        });
+      },
+      onError: (error) => {
+        console.error("Error starting grading:", error);
+        alert("Erro ao iniciar a correção. Tente novamente.");
+      },
+    }
+  );
 
-  const { mutate: mutateStartGrading, isPending } = useMutation({
-    mutationFn: () => startGrading(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assessments", classroomId] });
-    },
-    onError: (error) => {
-      console.error("Error starting grading:", error);
-      alert("Erro ao iniciar a correção. Tente novamente.");
-    },
-  });
+  const { mutate: mutateFinishGrading, isPending: isPendingFinish } =
+    useMutation({
+      mutationFn: () => finishGrading(id),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["assessments", classroomId],
+        });
+      },
+      onError: (error) => {
+        console.error("Error starting grading:", error);
+        alert("Erro ao iniciar a correção. Tente novamente.");
+      },
+    });
+  const isPending = isPendingStart || isPendingFinish;
 
   if (isPending) {
     return (
@@ -38,13 +75,18 @@ const AssessmentActions = ({ status, id, classroomId }: Props) => {
   return (
     <div>
       {status === "closed" && (
-        <button
+        <ActionButton
           title="Iniciar Correção"
-          className="cursor-pointer text-primary hover:text-amber-700"
-          onClick={handleClick}
-        >
-          <span className="material-symbols-outlined">contract_edit</span>
-        </button>
+          onClick={mutateStartGrading}
+          icon="contract_edit"
+        />
+      )}
+      {status === "under_review" && (
+        <ActionButton
+          title="Finalizar Correção"
+          onClick={mutateFinishGrading}
+          icon="rubric"
+        />
       )}
     </div>
   );

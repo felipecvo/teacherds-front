@@ -18,6 +18,7 @@ interface Props {
 }
 
 const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
+  const [show, setShow] = useState(false);
   const [criteria, setCriteria] = useState<{ [key: string]: number }>({});
   const [penalties, setPenalties] = useState<number[]>([]);
   const [feedback, setFeedback] = useState("");
@@ -27,6 +28,8 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
     mutationFn: async (data: { id: number; payload: Evaluation }) =>
       saveEvaluation(data.id, data.payload),
     onSuccess: () => {
+      setShow(true);
+      setTimeout(() => setShow(false), 3_000);
       console.log("Evaluation saved successfully");
       queryClient.invalidateQueries({ queryKey: ["evaluation", id] });
     },
@@ -101,6 +104,13 @@ const Evaluate = ({ id, onNext, onPrevious, onSave }: Props) => {
 
   return (
     <div className="space-y-6">
+      {show && (
+        <div className="fixed bottom-4  left-1/2 transform -translate-x-1/2 z-50 animate-slide-up">
+          <div className="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
+            ✅ Saved successfully!
+          </div>
+        </div>
+      )}
       {data.studentGroup && <StudentGroup {...data.studentGroup} />}
       {data.student && <StudentCard {...data.student} />}
       {data.rubric!.criteria.map((criterion: Criterion) => (
