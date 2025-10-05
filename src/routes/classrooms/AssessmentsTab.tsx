@@ -38,7 +38,7 @@ const AssessmentsTab = () => {
           <tr
             key={row.id}
             className="whitespace-nowrap text-base font-medium text-stone-800 hover:cursor-pointer hover:bg-primary/5"
-            onClick={() => navigate(`/assessments/${row.id}/evaluation`)}
+            onClick={() => navigate(`/assessments/${row.id}`)}
           >
             <td className="px-6 py-5">{row.title}</td>
             <td className="text-center px-6 py-5">{row.type}</td>

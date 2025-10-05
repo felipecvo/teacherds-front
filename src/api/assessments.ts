@@ -1,4 +1,5 @@
 import type { NewAssessment } from "../types/assessment";
+import type { StudentGrade } from "../types/grade";
 import apiClient from "./client";
 
 export const getRecentAssessments = async () => {
@@ -8,6 +9,13 @@ export const getRecentAssessments = async () => {
 
 export const getAssessment = async (id: string) => {
   const response = await apiClient.get(`/assessments/${id}`);
+  return response.data;
+};
+
+export const getAssessmentGrades = async (id: number | string) => {
+  const response = await apiClient.get<StudentGrade[]>(
+    `/assessments/${id}/grades`
+  );
   return response.data;
 };
 

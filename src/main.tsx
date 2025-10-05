@@ -20,6 +20,7 @@ import { rubricsLoader } from "./routes/rubrics/loader";
 import RubricForm from "./routes/rubrics/Form";
 import ShowClassroomPage from "./routes/classrooms/Show";
 import AssessmentFormPage from "./routes/assessments/Form";
+import ShowAssessmentPage from "./routes/assessments/Show";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
         path: "assessments/:assessmentId/evaluation",
         element: <EvaluationPage />,
         loader: evaluationLoader,
+      },
+      {
+        path: "assessments/:assessmentId",
+        element: <ShowAssessmentPage />,
       },
       {
         path: "classrooms",
