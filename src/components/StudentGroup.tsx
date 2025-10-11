@@ -2,7 +2,12 @@ import Card from "./ui/Card";
 
 interface Props {
   name: string;
-  students: { id: number; name: string; githubUsername: string }[];
+  students: {
+    id: number;
+    name: string;
+    githubUsername: string;
+    registrationNumber: string;
+  }[];
 }
 
 const StudentGroup = ({ name, students }: Props) => {
@@ -29,7 +34,12 @@ const StudentGroup = ({ name, students }: Props) => {
             <h2 className="text-2xl font-semibold text-gray-700">
               {student.name}
             </h2>
-            <p className="text-gray-500">@{student.githubUsername}</p>
+            <p className="text-gray-500">
+              @{student.githubUsername}{" "}
+              <span className="text-gray-400">
+                | {student.registrationNumber}
+              </span>
+            </p>
           </div>
         </div>
       ))}

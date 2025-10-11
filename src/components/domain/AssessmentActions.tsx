@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { finishGrading, startGrading } from "../../api/assessments";
 import type { AssessmentStatus } from "../../types/assessment";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   status: AssessmentStatus;
@@ -33,6 +34,7 @@ const ActionButton = ({ title, onClick, icon }: ActionButtonProps) => {
 
 const AssessmentActions = ({ status, id, classroomId }: Props) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { mutate: mutateStartGrading, isPending: isPendingStart } = useMutation(
     {
@@ -86,6 +88,13 @@ const AssessmentActions = ({ status, id, classroomId }: Props) => {
           title="Finalizar Correção"
           onClick={mutateFinishGrading}
           icon="rubric"
+        />
+      )}
+      {status === "under_review" && (
+        <ActionButton
+          title="Corrigir Avaliações"
+          onClick={() => navigate(`/assessments/${id}/evaluation`)}
+          icon="rate_review"
         />
       )}
     </div>
