@@ -8,6 +8,7 @@ const Root = () => {
     console.log("Root.useEffect.ws");
     const socket = new WebSocket("ws://localhost:8000");
     socket.addEventListener("open", (event) => {
+      console.log("websocket connected", event);
       socket.send("Hello Server!");
     });
     // socket.onmessage = (event) => {

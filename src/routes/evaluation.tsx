@@ -50,7 +50,7 @@ const EvaluationPage = () => {
             <p
               className="text-gray-400 italic"
               onClick={(e) =>
-                navigator.clipboard.writeText(e.currentTarget.textContent)
+                navigator.clipboard.writeText(e.currentTarget.textContent || "")
               }
             >
               gh classroom clone student-repos -a{" "}
