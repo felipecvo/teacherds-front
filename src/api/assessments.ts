@@ -35,3 +35,8 @@ export async function finishGrading(assessmentId: number) {
   const response = await apiClient.put(`/assessments/${assessmentId}/graded`);
   return response.data;
 }
+
+export async function closeAssessment(assessmentId: number) {
+  const response = await apiClient.put(`/assessments/${assessmentId}/close`);
+  return response.data;
+}

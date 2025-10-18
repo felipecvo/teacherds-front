@@ -13,11 +13,15 @@ const EvaluationPage = () => {
   }, [currentEvaluation]);
 
   function handleNext() {
-    setCurrentEvaluation((prev) => prev + 1);
+    setCurrentEvaluation((prev) =>
+      prev + 1 === evaluations.length ? 0 : prev + 1
+    );
   }
 
   function handlePrevious() {
-    setCurrentEvaluation((prev) => prev - 1);
+    setCurrentEvaluation((prev) =>
+      prev === 0 ? evaluations.length - 1 : prev - 1
+    );
   }
 
   function handleSave(completed: boolean) {
@@ -27,6 +31,9 @@ const EvaluationPage = () => {
       evaluations[currentEvaluation].id
     );
   }
+
+  const progress = 100 * (currentEvaluation / evaluations.length);
+  console.log(assessment);
 
   return (
     <div className="flex flex-col gap-6">
@@ -40,6 +47,15 @@ const EvaluationPage = () => {
               {assessment.title}
             </h2>
             <p>{assessment.classroom.name}</p>
+            <p
+              className="text-gray-400 italic"
+              onClick={(e) =>
+                navigator.clipboard.writeText(e.currentTarget.textContent)
+              }
+            >
+              gh classroom clone student-repos -a{" "}
+              {assessment.githubClassRoomAssignmentId}
+            </p>
           </div>
           <div>
             <div className="inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 text-xs font-semibold text-gray-800">
@@ -49,20 +65,21 @@ const EvaluationPage = () => {
           </div>
         </div>
       </Card>
-
       <Card>
         <div className="p-6">
           <div className="flex text-[#1d2530]">
             <div className="flex-1">Evaluation Progress</div>
-            <div>17%</div>
+            <div>{progress.toFixed(0)}%</div>
           </div>
 
           <div className="relative h-4 w-full overflow-hidden rounded-full bg-gray-200 my-2">
-            <div className="h-full w-full flex-1 bg-blue-900 -translate-x-[87%]"></div>
+            <div
+              className="h-full w-full flex-1 bg-blue-900"
+              style={{ transform: `translateX(-${100 - progress}%)` }}
+            ></div>
           </div>
         </div>
       </Card>
-      <p>{evaluations.length}</p>
       <Evaluate
         key={evaluations[currentEvaluation].id}
         id={evaluations[currentEvaluation].id}

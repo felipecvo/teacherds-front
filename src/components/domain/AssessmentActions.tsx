@@ -1,7 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { finishGrading, startGrading } from "../../api/assessments";
 import type { AssessmentStatus } from "../../types/assessment";
 import { useNavigate } from "react-router-dom";
+import { useAssessmentMutation } from "../../hooks/useAssessmentMutation";
 
 interface Props {
   status: AssessmentStatus;
@@ -33,38 +32,10 @@ const ActionButton = ({ title, onClick, icon }: ActionButtonProps) => {
 };
 
 const AssessmentActions = ({ status, id, classroomId }: Props) => {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { mutate: mutateStartGrading, isPending: isPendingStart } = useMutation(
-    {
-      mutationFn: () => startGrading(id),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["assessments", classroomId],
-        });
-      },
-      onError: (error) => {
-        console.error("Error starting grading:", error);
-        alert("Erro ao iniciar a correção. Tente novamente.");
-      },
-    }
-  );
-
-  const { mutate: mutateFinishGrading, isPending: isPendingFinish } =
-    useMutation({
-      mutationFn: () => finishGrading(id),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["assessments", classroomId],
-        });
-      },
-      onError: (error) => {
-        console.error("Error starting grading:", error);
-        alert("Erro ao iniciar a correção. Tente novamente.");
-      },
-    });
-  const isPending = isPendingStart || isPendingFinish;
+  const { mutateStartGrading, mutateFinishGrading, mutateClose, isPending } =
+    useAssessmentMutation(id, classroomId);
 
   if (isPending) {
     return (
@@ -95,6 +66,13 @@ const AssessmentActions = ({ status, id, classroomId }: Props) => {
           title="Corrigir Avaliações"
           onClick={() => navigate(`/assessments/${id}/evaluation`)}
           icon="rate_review"
+        />
+      )}
+      {status === "draft" && (
+        <ActionButton
+          title="Fechar Avaliação"
+          onClick={mutateClose}
+          icon="folder_check"
         />
       )}
     </div>

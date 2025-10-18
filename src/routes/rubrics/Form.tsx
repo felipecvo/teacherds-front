@@ -12,6 +12,12 @@ interface Props {
   mode: "new" | "edit";
 }
 
+const DEFAULT_LEVELS = [
+  { name: "Não implementado", description: "", weight: 0.0 },
+  { name: "Parcial", description: "", weight: 0.5 },
+  { name: "Completo", description: "", weight: 1.0 },
+];
+
 const schema = z
   .object({
     id: z.number().optional(),
@@ -86,7 +92,7 @@ const RubricForm = ({ mode }: Props) => {
           name: "",
           description: "",
           points: 0,
-          levels: [{ name: "", description: "", weight: 0.0 }],
+          levels: DEFAULT_LEVELS,
         },
       ],
     },
@@ -181,20 +187,6 @@ const RubricForm = ({ mode }: Props) => {
           <h3 className="font-cinzel text-2xl font-semibold font-display text-primary tracking-wide">
             Critérios de Avaliação
           </h3>
-          <button
-            className="secondary-button"
-            onClick={() =>
-              addCriteria({
-                name: "",
-                description: "",
-                points: 0,
-                levels: [{ name: "", description: "", weight: 0.0 }],
-              })
-            }
-          >
-            <span className="material-symbols-outlined text-base">add</span>
-            Adicionar Critério
-          </button>
         </div>
         <div className="space-y-6">
           {criteriaFields.map((field, index) => (
@@ -247,21 +239,26 @@ const RubricForm = ({ mode }: Props) => {
             </SectionCard>
           ))}
         </div>
+        <button
+          className="secondary-button mt-6"
+          onClick={() =>
+            addCriteria({
+              name: "",
+              description: "",
+              points: 0,
+              levels: DEFAULT_LEVELS,
+            })
+          }
+        >
+          <span className="material-symbols-outlined text-base">add</span>
+          Adicionar Critério
+        </button>
       </section>
       <section className="space-y-8">
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-cinzel text-2xl font-semibold font-display text-primary tracking-wide">
             Penalidades
           </h3>
-          <button
-            className="secondary-button"
-            onClick={() =>
-              addPenalty({ name: "", description: "", points: -1 })
-            }
-          >
-            <span className="material-symbols-outlined text-base">add</span>
-            Adicionar Penalidade
-          </button>
         </div>
         {penaltyFields.map((field, index) => (
           <SectionCard key={field.id}>
@@ -299,6 +296,13 @@ const RubricForm = ({ mode }: Props) => {
             </button>
           </SectionCard>
         ))}
+        <button
+          className="secondary-button"
+          onClick={() => addPenalty({ name: "", description: "", points: -1 })}
+        >
+          <span className="material-symbols-outlined text-base">add</span>
+          Adicionar Penalidade
+        </button>
       </section>
       <div className="flex justify-end pt-8 border-t-2 border-primary mt-4">
         <button
