@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAssessmentGrades } from "../../api/assessments";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   assessmentId: number;
 }
 const StudentGrades = ({ assessmentId }: Props) => {
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["studentGrades", assessmentId],
     queryFn: () => getAssessmentGrades(assessmentId),
@@ -31,6 +33,7 @@ const StudentGrades = ({ assessmentId }: Props) => {
           <tr
             key={row.id}
             className="text-base font-medium text-stone-800 hover:cursor-pointer hover:bg-primary/5"
+            onClick={() => navigate(`/grades/${row.id}`)}
           >
             <td className="px-6 py-5">{row.registrationNumber}</td>
             <td className="px-6 py-5 text-sm whitespace-nowrap">

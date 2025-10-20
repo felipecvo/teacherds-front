@@ -21,6 +21,7 @@ import RubricForm from "./routes/rubrics/Form";
 import ShowClassroomPage from "./routes/classrooms/Show";
 import AssessmentFormPage from "./routes/assessments/Form";
 import ShowAssessmentPage from "./routes/assessments/Show";
+import ShowGradePage from "./routes/grades/Show";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "assessments/:assessmentId",
         element: <ShowAssessmentPage />,
+      },
+      {
+        path: "grades/:id",
+        element: <ShowGradePage />,
       },
       {
         path: "classrooms",

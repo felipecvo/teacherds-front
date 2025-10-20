@@ -5,3 +5,7 @@ export interface StudentGrade {
   finalScore: number | null;
   feedbackDraft: string | null;
 }
+
+export interface FinalGrade extends StudentGrade {
+  criterions: string[];
+}
